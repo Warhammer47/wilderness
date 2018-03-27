@@ -11,7 +11,7 @@ good_animals = ["rabbit","bird","bug"]
 bad_animals = ["wolf","poisonous snake"]
 health_status = ["Healthy","Injured","Poisoned"]
 food_status = ["Full","Hungry","Starving"]
-drink_status = ["Full","Thristy","Dehydrating"]
+drink_status = ["Full","Thirsty","Dehydrating"]
 actions_options = {"wait","search"}
 
 locations = {"forrest": "forrest_env",
@@ -41,7 +41,7 @@ turns=1000
 ap = 1
 
 #Option function
-def wait_for_action(options, prop):
+def wait_for_option(options, prop):
     chosen_option = ''
     while chosen_option not in options:
         chosen_option = raw_input(prop % list(options))
@@ -60,7 +60,7 @@ while turns > 0:
                                                "R:")
     #Base walking loop
     if choice == "walk":
-        path = wait_for_action(directions_options,"Which direction do you want to take? \n"
+        path = wait_for_option(directions_options,"Which direction do you want to take? \n"
                                                   "Possible directions: %s \n"
                                                   "Your direction: ")
         if path == "north":
@@ -74,14 +74,13 @@ while turns > 0:
         else:
             print ("I've wasted my time")
     elif choice == "actions":
-        action = wait_for_action(actions_options,
+        action = wait_for_option(actions_options,
                                  "Which action do you want to take?\n"
                                  "Possible actions: %s\n"
                                  "Your action: ")
         if action == "wait":
             ap += 1
             print ("I've waited some time and gain some energy")
-    #Base actions loop
 
     
     
