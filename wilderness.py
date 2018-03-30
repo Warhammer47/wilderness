@@ -5,25 +5,38 @@ Created on Mon Mar 19 15:46:16 2018
 @author: Pedro
 """
 #Lists of objects
-food = ["beans","bar","meat"]
 directions_options = {"north", "south", "east", "west"}
 good_animals = ["rabbit","bird","bug"]
 bad_animals = ["wolf","poisonous snake"]
 health_status = ["Healthy","Injured","Poisoned"]
 food_status = ["Full","Hungry","Starving"]
 drink_status = ["Full","Thirsty","Dehydrating"]
-actions_options = {"wait","search"}
+actions_options = {"wait","search","eat","drink"}
+
+inventory = ("watch", "wallet")
+
+items = {"stone": 0.3,
+         "branch": 0.2,
+         "flint": 0.2,
+         "berries": 0.2,
+         "water bottle": 0.1}
+
+food = {"beans": "300",
+        "energy bar": "155",
+        "small meat": "173"}
 
 locations = {"forrest": "forrest_env",
-                 "cabin":"cabin_env",
-                 "cave": "cave_env",
-                 "mountain": "mountain_env",
-                 "river basin": "river_basin_env",
-                 "beach": "beach_env"}
+             "cabin":"cabin_env",
+             "cave": "cave_env",
+             "mountain": "mountain_env",
+             "river basin": "river_basin_env",
+             "beach": "beach_env"}
 
 #Modules needed
 import time
 import random
+import numpy as np
+
 
 #Current possition
 c_pos = str(random.choice(list(locations.keys())))
@@ -36,9 +49,6 @@ print ("After a long walk you got lost in a " + str(c_pos) + ".\nTry to survive 
 
 #time.sleep(5)
 
-#Number of turns
-turns=1000
-ap = 1
 
 #Option function
 def wait_for_option(options, prop):
@@ -50,10 +60,15 @@ def wait_for_option(options, prop):
 
     return chosen_option
 
+#Number of turns
+turns=1000
+ap = 0
+
 #Turn base loop
 #time.sleep (1)
 while turns > 0:
     print ("NEW TURN")
+    ap += 1
     #time.sleep (1)
     choice = raw_input("You have " + str(ap) + " action points.\n"
                                                "What you want to do?(walk / actions)\n"
@@ -71,6 +86,7 @@ while turns > 0:
             print ("Walking...")
             time.sleep(1)
             turns -= 1
+            ap -= 1
         else:
             print ("I've wasted my time")
     elif choice == "actions":
@@ -79,15 +95,16 @@ while turns > 0:
                                  "Possible actions: %s\n"
                                  "Your action: ")
         if action == "wait":
-            ap += 1
             print ("I've waited some time and gain some energy")
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
+            ap += 1
+        if action == "search":
+            # Search action is defined
+            print ("Searching.")
+            time.sleep(1)
+            print ("Searching..")
+            time.sleep(1)
+            print ("Searching...")
+            time.sleep(1)
+            ap -= 1
+            new_item = np.random.choice(list(items.keys()), p=list(items.values()))
+            print ("You have found: " + str(new_item))
