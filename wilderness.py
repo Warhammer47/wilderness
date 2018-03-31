@@ -21,9 +21,9 @@ items = {"stone": 0.3,
          "berries": 0.2,
          "water bottle": 0.1}
 
-food = {"beans": "300",
-        "energy bar": "155",
-        "small meat": "173"}
+food_items = {"beans": "300",
+              "energy bar": "155",
+              "small meat": "173"}
 
 locations = {"forrest": "forrest_env",
              "cabin":"cabin_env",
@@ -32,17 +32,26 @@ locations = {"forrest": "forrest_env",
              "river basin": "river_basin_env",
              "beach": "beach_env"}
 
+# Defining status
+# in ml (max = 2000)
+# in calories (max = 2000)
+# in hours of sleep (max = 8)
+# Health (max = 100)
+status = {"drink": "2000",
+          "food": "2000",
+          "sleep": "8",
+          "health": "100"}
+
 #Modules needed
 import time
 import random
 import numpy as np
 
-
-#Current possition
-c_pos = str(random.choice(list(locations.keys())))
+#Current position
+position = str(random.choice(list(locations.keys())))
 
 #Start game
-print ("After a long walk you got lost in a " + str(c_pos) + ".\nTry to survive and find your way back")
+print ("After a long walk you got lost in a " + str(position) + ".\nTry to survive and find your way back")
 
 #Setting the location environment (in development)
 #print (str(locations_dic[c_pos]))
@@ -68,49 +77,63 @@ ap = 0
 #time.sleep (1)
 while turns > 0:
     print ("NEW TURN")
-    ap += 5
+    ap += 60
+    status["drink"] -= 80
+    status["food"] -= 80
+    status["sleep"] -= 0.33
+    #Death outcome
+    if status["health"] <= 0:
+        print("You died...")
+        break
     #time.sleep (1)
     choice = raw_input("You have " + str(ap) + " action points.\n"
                                                "What you want to do?(actions/skip)\n"
                                                "R:")
-    #Base pass turn loop
+    #Pass turn
     if choice == "skip":
         print("You have skip the turn")
 
+    #Basic actions
     while ap > 0:
-        # Base walking loop
         if choice == "actions":
             action = wait_for_option(actions_options,
                                      "You have " + str(ap) + " APs\n"
                                      "Which action do you want to take?\n"
                                      "Possible actions: %s\n"
                                      "Your action: ")
-            if action == "inventory":
-                print ("My inventory has: " + str(inventory))
-            if action == "walk":
-                path = wait_for_option(directions_options, "Which direction do you want to take? \n"
-                                                           "Possible directions: %s \n"
-                                                           "Your direction: ")
-                if path == "north":
-                    print ("Walking.")
-                    time.sleep(1)
-                    print ("Walking..")
-                    time.sleep(1)
-                    print ("Walking...")
-                    time.sleep(1)
-                    ap -= 1
-            if action == "wait":
-                print ("I've waited some time and gain some energy")
-                ap += 1
-            if action == "search":
-                # Search action is defined
-                print ("Searching.")
+        #Check status
+        if action == "status":
+            print
+        #Check inventory
+        if action == "inventory":
+            print ("My inventory has: " + str(inventory))
+        #Base walking
+        if action == "walk":
+            path = wait_for_option(directions_options, "Which direction do you want to take? \n"
+                                                       "Possible directions: %s \n"
+                                                       "Your direction: ")
+            if path == "north":
+                print ("Walking.")
                 time.sleep(1)
-                print ("Searching..")
+                print ("Walking..")
                 time.sleep(1)
-                print ("Searching...")
+                print ("Walking...")
                 time.sleep(1)
-                ap -= 1
-                new_item = np.random.choice(list(items.keys()), p=list(items.values()))
-                print ("You have found: " + str(new_item))
-                inventory.insert(0, str(new_item))
+                ap -= 60
+        #Base wait
+        if action == "wait":
+            print ("I've waited some time and gain some energy")
+            ap += 10
+        #Base search
+        if action == "search":
+            # Search action is defined
+            print ("Searching.")
+            time.sleep(1)
+            print ("Searching..")
+            time.sleep(1)
+            print ("Searching...")
+            time.sleep(1)
+            ap -= 30
+            new_item = np.random.choice(list(items.keys()), p=list(items.values()))
+            print ("You have found: " + str(new_item))
+            inventory.insert(0, str(new_item))
